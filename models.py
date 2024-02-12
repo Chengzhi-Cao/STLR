@@ -13,8 +13,8 @@ from torch.utils.data import DataLoader
 
 
 from data import TrainDataset, ValidDataset, TestDataset, RuleDataset
-from Ours.evaluator import Evaluator
-from generatorsv2 import Generator
+from evaluator import Evaluator
+from generators import Generator
 from utils import load_config, save_config, set_logger, set_seed
 from trainer import Train_Evaluator, Train_Generator
 import comm
