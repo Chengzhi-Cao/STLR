@@ -12,8 +12,8 @@ import torch
 from torch.utils.data import DataLoader
 
 
-from data import TrainDataset, ValidDataset, TestDataset, RuleDataset
-from evaluator import Evaluator
+from dataset import TrainDataset, ValidDataset, TestDataset, RuleDataset
+from reasoning_evaluator import Reasoning_Evaluator
 from generators import Generator
 from utils import load_config, save_config, set_logger, set_seed
 from trainer import Train_Evaluator, Train_Generator
@@ -70,7 +70,7 @@ def main(args):
         rules = [rule[0:-1] for rule in sampled_rules]
 
         # Train a reasoning predictor with sampled logic rules.
-        predictor = Evaluator(**cfg.predictor.model)
+        predictor = Reasoning_Evaluator(**cfg.predictor.model)
         predictor.set_rules(rules)
         optim = torch.optim.Adam(predictor.parameters(), **cfg.predictor.optimizer)
 
@@ -92,7 +92,7 @@ def main(args):
 
     if comm.get_rank() == 0:
         logging.info('-------------------------')
-        logging.info('| Beam Search Best Rules')
+        logging.info('| Best Rules')
         logging.info('-------------------------')
     
 
