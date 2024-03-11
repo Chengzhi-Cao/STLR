@@ -38,7 +38,6 @@ def main(args):
         os.makedirs(cfg.save_path)
     
     save_config(cfg, cfg.save_path)
-
     set_logger(cfg.save_path)
     set_seed(cfg.seed)
 
@@ -46,7 +45,6 @@ def main(args):
     train_set = TrainDataset()
     valid_set = ValidDataset()
     test_set = TestDataset()
-
     dataset = RuleDataset()
 
     if comm.get_rank() == 0:
@@ -63,28 +61,19 @@ def main(args):
             logging.info('-------------------------')
             logging.info('| EM Iteration: {}/{}'.format(k + 1, cfg.EM.num_iters))
             logging.info('-------------------------')
-        
-        # Sample logic rules.
         sampled_rules = solver_g.sample(cfg.EM.num_rules, cfg.EM.max_length)
         prior = [rule[-1] for rule in sampled_rules]
         rules = [rule[0:-1] for rule in sampled_rules]
-
-        # Train a reasoning predictor with sampled logic rules.
         predictor = Reasoning_Evaluator(**cfg.predictor.model)
         predictor.set_rules(rules)
         optim = torch.optim.Adam(predictor.parameters(), **cfg.predictor.optimizer)
-
         solver_p = Train_Evaluator(predictor, train_set, valid_set, test_set, optim, gpus=cfg.predictor.gpus)
         solver_p.train(**cfg.predictor.train)
-
-        # E-step: Compute H scores of logic rules.
         likelihood = solver_p.compute_H(**cfg.predictor.H_score)
         posterior = [l + p * cfg.EM.prior_weight for l, p in zip(likelihood, prior)]
         for i in range(len(rules)):
             rules[i].append(posterior[i])
         replay_buffer += rules
-        
-        # M-step: Update the rule generator.
         dataset = RuleDataset()
         solver_g.train(dataset, **cfg.generator.train)
         

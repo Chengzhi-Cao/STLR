@@ -2,7 +2,7 @@
 
 This repository provides the implementation of the paper: Discovering Intrinsic Spatial-Temporal Logic Rules to Explain Human Actions.
 
-Advances in Neural Information Processing Systems 36 pre-proceedings (NeurIPS 2023)
+Advances in Neural Information Processing Systems (NeurIPS 2023)
 
  [Paper Link](https://proceedings.neurips.cc/paper_files/paper/2023/hash/d69fdbe4d13080bb7fa33249ca136976-Abstract-Conference.html)
 
@@ -70,9 +70,6 @@ optional arguments:
                  one of the game)
   -h, --help     show the help message and exit
 ```
-
-<img src= "dataset/img.gif" width="120%">
-
 
 
 ## License
